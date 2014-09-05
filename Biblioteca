@@ -10,11 +10,12 @@ generadores
 
 observadores
 	libros: biblioteca -> Conj(libro)
-	autores: biblioteca -> Conj(autor)
 	encontrarAutor: libro l x biblioteca b -> autor  			{l ∈ libros(b)}	
 	encontrarLibros: autor a x biblioteca b -> Conj(libro) 
 
-
+otra operacion
+	autores: biblioteca -> Conj(autor)
+	
 axiomas
 
 	libros(nuevaBiblioteca) ≡ ⦴

@@ -75,7 +75,7 @@ igualdad observacional
 				(∀p : persona) (Entro?(p,a) = Entro?(p,b)) 
 				∧ (FueAtendido?(p, a) = FueAtendido?(p, b)) 
 				∧ (SeRetiro?(p,a) = SeRetiro?(p,b))
-				∧ ((Esperando(p, a) = Esperando(p, b)) ∧ (Esperando(p, a) ⇒ₗ SeColo?(p,a) = SeColo?(p, b)))
+				∧ ((Esperando(p, a) = Esperando(p, b)) ∧ₗ (Esperando(p, a) ⇒ₗ SeColo?(p,a) = SeColo?(p, b)))
 				)
 
   
@@ -93,11 +93,11 @@ observadores
 	Entro? : persona × fila −→ bool 
 	FueAtendido? : persona × fila −→ bool
 	SeRetiro? : persona p x fila f −→ bool  {Entro?(p,f)}
+	Esperando : persona × fila −→ bool
 
 otras operaciones
 	Longitud : fila −→ nat
 	Vacıa : fila −→ bool
-	Esperando : persona × fila −→ bool
 	Posicion  : persona p × fila f −→ nat 	{Esperando(p,f)}
 
 	agregarClienteAdelante : persona p x persona q x cola(persona) c −→ cola(persona)  {¬enClientes(p,c) ∧ enClientes(q,c)}
