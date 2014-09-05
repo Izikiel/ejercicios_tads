@@ -1,0 +1,26 @@
+TAD Red
+igualdad observacional
+(...)
+observadores basicos
+
+	Ciudad? : ciudad × red −→ bool 
+	Conectadas? : ciudad c1 × ciudad c2 × red r −→ bool		{Ciudad?(c1,r) ∧ Ciudad?(c2,r) ∧ c1 ≠ c2}
+	Distancia : ciudad c1 × ciudad c2 × red r −→ nat		{Ciudad?(c1, r) ∧ Ciudad?(c2, r) ∧ c1 ≠ c2 ∧ₗ Conectadas?(c1, c2, r)}
+
+generadores
+	Pavimentar : −→ red
+	Edificar : ciudad c × red r −→ red 					{¬Ciudad?(c, r)} 
+	Conectar : ciudadc1 ×ciudadc2 × nat d ×red r −→ red 	{Ciudad?(c1, r) ∧ Ciudad?(c2, r) ∧ c1 ≠ c2 ∧ (d > 0) ∧L ¬Conectadas?(c1, c2, r)} 
+
+otras operaciones
+
+	Ciudades : red −→ conjunto(ciudad)
+
+Fin TAD
+
+TAD Ciudad extiende Nat
+(con el agregado de la operacion (aqui se adopta esta abreviatura para no sobrecargarlos en lecturas))
+otras operaciones
+	Match : ciudadc1 ×ciudadc2 ×ciudadc3 ×ciudadc4 −→ bool {c1 ̸=c2 ∧c3 ̸=c4} 
+axiomas 	∀ ciudad c1, c2, c3, c4
+	Match(c1,c2,c3,c4) ≡ ((c1 = c3) ∧ (c2 = c4)) ∨ ((c1 = c4) ∧ (c2 = c3)) Fin TAD
