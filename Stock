@@ -1,1 +1,71 @@
-Stock
+tad producto es string
+
+TAD Stock
+
+
+generadores
+
+	nuevoStock: -> Stock
+	agregar: producto p x nat c x Stock st -> Stock
+	comprar: producto p x nat c x Stock st -> Stock
+	vender : producto p x nat c x Stock st -> Stock   {stockProducto(p) >= c}
+	sustituir : producto p x producto s x Stock st -> Stock 		{p ∈ productos(st)}
+
+observadores
+
+	productos : Stock -> Conj(productos)
+	stockProducto : producto p x Stock st -> nat	{p ∈ productos(st)}
+	minimoStock : producto p x Stock st -> nat      {p ∈ productos(st)}
+	tieneSustituto? : producto p x Stock st -> bool   {p ∈ productos(st)}
+	Sustituto : producto p x Stock st -> producto 	{tieneSustituto?(p, st)}
+
+
+otras operaciones
+	estaDebajoMinimo? : producto p x Stock st -> bool
+	filtrarPorStock : Conj(producto) ps x Stock st -> Conj(producto)
+	productosDebajoMinimo: Stock -> Conj(producto)
+
+axiomas
+
+	productos(nuevoStock) ≡ ⦴
+	productos(agregar(p, c, st)) ≡ Ag(p, productos(st))
+	productos(comprar(p, c, st)) ≡ Ag(p, productos(st))
+	productos(vender(p, c, st)) ≡ Ag(p, productos(st))
+	productos(sustituir(p, s, st)) ≡ Ag(s, productos(st))
+
+	stockProducto(p, agregar(p', c, st)) ≡ if p = p' then c else stockProducto(p, st) fi
+	stockProducto(p, comprar(p', c, st)) ≡ if p = p' then c else 0 fi + stockProducto(p, st)
+	stockProducto(p, vender(p', c, st)) ≡ stockProducto(p, st) - if p = p' then c else 0 fi
+	stockProducto(p, sustituir(p', s, st)) ≡ stockProducto(p, st)
+
+	minimoStock(p, agregar(p', c, st)) ≡ if p = p' then c else minimoStock(p, st) fi
+	minimoStock(p, comprar(p', c, st)) ≡ minimoStock(p, st)
+	minimoStock(p, vender(p', c, st)) ≡ minimoStock(p, st)
+	minimoStock(p, sustituir(p', s, st)) ≡ minimoStock(p, st)
+
+	tieneSustituto?(p, agregar(p', c, st)) ≡ if p = p' then False else tieneSustituto?(p, st) fi
+	tieneSustituto?(p, comprar(p', c, st)) ≡ tieneSustituto?(p, st)
+	tieneSustituto?(p, vender(p', c, st)) ≡  tieneSustituto?(p, st)
+	tieneSustituto?(p, sustituir(p', s, st)) ≡ if p = p' then True else tieneSustito?(p, st) fi
+
+
+	Sustituto(p, comprar(p', c, st)) ≡ Sustituto(p, st)
+	Sustituto(p, vender(p', c, st)) ≡ Sustituto(p, st)
+	Sustituto(p, sustituir(p', s, st)) ≡ if p = p' then s else Sustituto(p, st) fi
+
+
+	estaDebajoMinimo?(p, st) ≡ if ¬tieneSustituto?(p, st) then 
+									stockProducto(p, st) < minimoStock(p, st)
+								else
+									(stockProducto(p, st) + stockProducto(Sustituto(p, st), st)) < minimoStock(p, st)
+								fi
+
+	filtrarPorStock(ps, st) ≡ if estaDebajoMinimo?(dameUno(p), st) then 
+									Ag(p, filtrarPorStock(sinUno(ps), st))
+								else
+									filtrarPorStock(sinUno(ps), st)
+								fi
+
+	productosDebajoMinimo(st) ≡ filtrarPorStock(productos(st), st)
+
+
