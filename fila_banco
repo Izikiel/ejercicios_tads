@@ -1,0 +1,167 @@
+a)
+
+// Sin comportamiento automatico
+generadores
+
+	AbrirVentanilla : −→ fila
+	Llegar : persona p × fila f −→ fila 	{¬Esperando(p,f)}
+
+observadores
+	Longitud : fila −→ nat
+	Esperando : persona × fila −→ bool
+	Atender : fila f −→ fila 				{¬Vacıa(f)}
+	Posicion  : persona p × fila f −→ nat 	{Esperando(p,f)}
+
+otras operaciones
+	Vacıa : fila −→ bool
+
+axiomas
+	Longitud(AbrirVentanilla) ≡ 0
+	Longitud(Llegar(p,f)) ≡ 1 + Longitud(f)
+
+	Vacia(f) ≡ if Longitud(f) > 0 then True else False fi
+
+	Atender(Llegar(p,f)) ≡ if Vacia(f) then f else Llegar(p, Atender(f)) fi
+
+	Esperando(p, AbrirVentanilla) ≡ False
+	Esperando(p, Llegar(p',f)) ≡ if p = p' then True else Esperando(p,f) fi
+
+	Posición(p, Llegar(p', f)) ≡ if p = p' then Longitud(f) else Posición(p, f) fi 
+
+//Con comportamiento automatico
+
+generadores
+
+	AbrirVentanilla : −→ fila
+	Llegar : persona p × fila f −→ fila 	{¬Esperando(p,f)}
+	Atender : fila f −→ fila 				{¬Vacıa(f)}
+
+observadores
+	Longitud : fila −→ nat
+	clientes : fila f −→ cola(persona)
+
+otras operaciones
+	Vacıa : fila −→ bool
+	Esperando : persona × fila −→ bool
+	Posicion  : persona p × fila f −→ nat 	{Esperando(p,f)}
+
+	enClientes : persona p x cola(persona) c −→ bool
+	posCliente : persona p x cola(persona) c −→ nat 	{enClientes(p,c)}
+
+axiomas
+	clientes(AbrirVentanilla) ≡ vacia
+	clientes(Llegar(p,f)) ≡ encolar(p, clientes(f))
+	clientes(Atender(f)) ≡ desencolar(clientes(f))
+
+	Longitud(AbrirVentanilla) ≡ 0
+	Longitud(Llegar(p,f)) ≡ 1 + Longitud(f)
+	Longitud(Atender(f)) ≡ Longitud(f) - 1  // y si lo expreso como tamaño(clientes(f)) ??
+
+	Vacia(f) ≡ vacia?(clientes(f))
+
+	enClientes(p, c) ≡ if p = proximo(c) then True else enClientes(p, desencolar(c)) fi
+
+ 	Esperando(p,f) ≡ enClientes(p, clientes(f)) 
+
+ 	posCliente(p, c) ≡ if p = proximo(c) then 0 else 1 + posCliente(p, desencolar(c)) fi
+
+ 	Posicion(p, f) ≡ posCliente(p, clientes(f))
+
+b y c)
+
+igualdad observacional
+
+(∀ a,b : fila ) (a =obs b  ⇐⇒ clientes(a) = clientes(b) ∧ (
+				(∀p : persona) (Entro?(p,a) = Entro?(p,b)) 
+				∧ (FueAtendido?(p, a) = FueAtendido?(p, b)) 
+				∧ (SeRetiro?(p,a) = SeRetiro?(p,b))
+				∧ ((Esperando(p, a) = Esperando(p, b)) ∧ (Esperando(p, a) ⇒ₗ SeColo?(p,a) = SeColo?(p, b)))
+				)
+
+  
+generadores
+
+	AbrirVentanilla : −→ fila
+	Llegar : persona p × fila f −→ fila 	{¬Esperando(p,f)}
+	Atender : fila f −→ fila 				{¬Vacıa(f)}
+	Retirarse : persona p × fila f −→ fila 								{Esperando(p,f)}
+	ColarseAdelanteDe : persona p × persona q × fila f −→ fila			{¬Esperando(p,f) ∧ Esperando(q,f)}
+
+observadores
+	clientes : fila f −→ cola(persona)
+	SeColo? : persona p × fila f −→ bool												{Esperando(p,f)}
+	Entro? : persona × fila −→ bool 
+	FueAtendido? : persona × fila −→ bool
+	SeRetiro? : persona p x fila f −→ bool  {Entro?(p,f)}
+
+otras operaciones
+	Longitud : fila −→ nat
+	Vacıa : fila −→ bool
+	Esperando : persona × fila −→ bool
+	Posicion  : persona p × fila f −→ nat 	{Esperando(p,f)}
+
+	agregarClienteAdelante : persona p x persona q x cola(persona) c −→ cola(persona)  {¬enClientes(p,c) ∧ enClientes(q,c)}
+	sacarCliente : persona p x cola(persona) c -> cola(persona) 						{enClientes(p,c)}
+	enClientes : persona p x cola(persona) c −→ bool
+	posCliente : persona p x cola(persona) c −→ nat 									{enClientes(p,c)}
+
+
+axiomas
+	clientes(AbrirVentanilla) ≡ vacia
+	clientes(Llegar(p,f)) ≡ encolar(p, clientes(f))
+	clientes(Atender(f)) ≡ desencolar(clientes(f))
+	clientes(Retirarse(p,f)) ≡ sacarCliente(p, clientes(f))
+	clientes(ColarseAdelanteDe(p,q,f)) ≡ agregarClienteAdelante(p, q, clientes(f))
+	
+	Longitud(f) ≡ tamaño(clientes(f))
+
+ 	Entro?(p, AbrirVentanilla) ≡ False
+	Entro?(p, Llegar(p', f)) ≡  if p = p' then True else Entro?(p,f) fi
+	Entro?(p, Retirarse(p', f)) ≡  if p = p' then True else Entro?(p,f) fi
+	Entro?(p, ColarseAdelanteDe(p', q, f)) ≡  if p = p' then True else Entro?(p,f) fi
+	Entro?(p, Atender(f)) ≡ Entro?(p, f)
+
+	sacarCliente(p, c) if p = proximo(c) then 
+							desencolar(c) 
+						else 
+							encolar(proximo(c), sacarCliente(p, desencolar(c))) 
+						fi
+
+	agregarClienteAdelante(p, q, c) ≡ if q = proximo(c) then
+										encolar(q, encolar(p, desencolar(c)))
+									  else
+									  	encolar(proximo(c), agregarClienteAdelante(p, q, desencolar(c)))
+									  fi
+
+	SeColo?(p, Llegar(p', f)) ≡ if p = p' then False else SeColo?(p, f) fi
+	SeColo?(p, Atender(f)) ≡ SeColo?(p, f)
+	SeColo?(p, ColarseAdelanteDe(p', q, f)) ≡ if p = p' then True else SeColo?(p, f) fi
+
+	SeRetiro?(p, Atender(f)) ≡ SeRetiro?(p, f)
+	SeRetiro?(p, Llegar(p', f)) ≡ if p = p' then False else SeRetiro?(p, f) fi
+	SeRetiro?(p, ColarseAdelanteDe(p', q, f)) ≡ if p = p' then False else SeRetiro?(p, f) fi
+	SeRetiro?(p, Retirarse(p', f)) ≡ if p = p' then True else SeRetiro?(p, f) fi
+	
+
+	Vacia(f) ≡ vacia?(clientes(f))
+
+	enClientes(p, c) ≡ if p = proximo(c) then True else enClientes(p, desencolar(c)) fi
+
+ 	Esperando(p,f) ≡ enClientes(p, clientes(f)) 
+
+ 	posCliente(p, c) ≡ if p = proximo(c) then 0 else 1 + posCliente(p, desencolar(c)) fi
+
+ 	Posicion(p, f) ≡ posCliente(p, clientes(f))
+
+	FueAtendido?(p, f) ≡ if (¬Esperando(p,f) ∧ Entro?(p,f)) then ¬SeRetiro?(p, f) else False fi
+
+
+
+
+
+
+
+
+
+
+

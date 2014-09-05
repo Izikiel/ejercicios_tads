@@ -1,0 +1,56 @@
+tad libro es string
+tad autor es string
+
+Biblioteca
+
+generadores
+	
+	nuevaBiblioteca: -> Biblioteca
+	agregarLibro: Libro l x autor a x Biblioteca b -> Biblioteca
+
+observadores
+	libros: biblioteca -> Conj(libro)
+	autores: biblioteca -> Conj(autor)
+	encontrarAutor: libro l x biblioteca b -> autor  			{l ∈ libros(b)}	
+	encontrarLibros: autor a x biblioteca b -> Conj(libro) 
+
+
+axiomas
+
+	libros(nuevaBiblioteca) ≡ ⦴
+	libros(agregarLibro(l, a, b)) ≡ Ag(l, libros(b))
+
+	autores(nuevaBiblioteca) ≡ ⦴
+	autores(agregarLibro(l, a, b)) ≡ Ag(a, autores(b))
+
+	encontrarAutor(l, agregarLibro(l', a, b)) ≡ if l = l' then a else encontrarAutor(l, b) fi
+
+	encontrarLibros(a, nuevaBiblioteca) ≡ ⦴
+	encontrarLibros(a, agregarLibro(l, a', b)) ≡ if a = a' then Ag(l, encontrarLibros(a, b)) else encontrarLibros(a, b) fi
+
+b)
+
+tad libro
+
+igualdad observacional
+
+(∀ a, b : libro) (a =obs b ↔ titulo(a) = titulo(b) ∧ isbn(a) = isbn(b))
+
+generadores
+
+	nuevoLibro : string t x string i-> libro
+
+observadores
+	
+	titulo : libro -> string
+	isbn :	libro -> string
+
+axiomas
+
+	titulo(nuevoLibro(t, i)) ≡ t
+	isbn(nuevoLibro(t, i)) ≡ i
+	
+
+
+
+
