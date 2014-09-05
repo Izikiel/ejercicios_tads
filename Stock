@@ -8,7 +8,7 @@ generadores
 	nuevoStock: -> Stock
 	agregar: producto p x nat c x Stock st -> Stock
 	comprar: producto p x nat c x Stock st -> Stock
-	vender : producto p x nat c x Stock st -> Stock   {stockProducto(p) >= c}
+	vender : producto p x nat c x Stock st -> Stock   {stockProducto(p) >= 0}
 	sustituir : producto p x producto s x Stock st -> Stock 		{p ∈ productos(st)}
 
 observadores
@@ -34,8 +34,8 @@ axiomas
 	productos(sustituir(p, s, st)) ≡ Ag(s, productos(st))
 
 	stockProducto(p, agregar(p', c, st)) ≡ if p = p' then c else stockProducto(p, st) fi
-	stockProducto(p, comprar(p', c, st)) ≡ if p = p' then c else 0 fi + stockProducto(p, st)
-	stockProducto(p, vender(p', c, st)) ≡ stockProducto(p, st) - if p = p' then c else 0 fi
+	stockProducto(p, comprar(p', c, st)) ≡ stockProducto(p, st) + (if p = p' then c else 0 fi)
+	stockProducto(p, vender(p', c, st)) ≡ stockProducto(p, st) - (if p = p' then c else 0 fi)
 	stockProducto(p, sustituir(p', s, st)) ≡ stockProducto(p, st)
 
 	minimoStock(p, agregar(p', c, st)) ≡ if p = p' then c else minimoStock(p, st) fi
@@ -60,7 +60,7 @@ axiomas
 									(stockProducto(p, st) + stockProducto(Sustituto(p, st), st)) < minimoStock(p, st)
 								fi
 
-	filtrarPorStock(ps, st) ≡ if ⦴?ps then ⦴
+	filtrarPorStock(ps, st) ≡ if ⦴?(ps) then ⦴
 								else
 									if estaDebajoMinimo?(dameUno(ps), st) then 
 										Ag(dameUno(ps), filtrarPorStock(sinUno(ps), st))
