@@ -60,10 +60,13 @@ axiomas
 									(stockProducto(p, st) + stockProducto(Sustituto(p, st), st)) < minimoStock(p, st)
 								fi
 
-	filtrarPorStock(ps, st) ≡ if estaDebajoMinimo?(dameUno(p), st) then 
-									Ag(p, filtrarPorStock(sinUno(ps), st))
+	filtrarPorStock(ps, st) ≡ if ⦴?ps then ⦴
 								else
-									filtrarPorStock(sinUno(ps), st)
+									if estaDebajoMinimo?(dameUno(ps), st) then 
+										Ag(dameUno(ps), filtrarPorStock(sinUno(ps), st))
+									else
+										filtrarPorStock(sinUno(ps), st)
+									fi
 								fi
 
 	productosDebajoMinimo(st) ≡ filtrarPorStock(productos(st), st)
