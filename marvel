@@ -1,0 +1,85 @@
+TAD heroe es string
+TAD villano es string
+
+
+TAD MarvelCity
+genero: marvel
+
+
+
+igualdad observacional:
+
+
+(∀m,n: marvel) (m =obs n ⟷ (heroes(m) = heroes(n) ∧ villanos(m) = villanos(n))
+				∧ₗ ( 
+					(∀v:villano)(∀h:heroe) (h ∈ heroes(m) ∧ v ∈ villanos(m))
+					  ∧ₗ (peleas(h, v, m) = peleas(h, v, n) ∧ encarcelado(v, m) = encarcelado(v, n))  
+					)  
+				)
+
+
+generadores:
+	nueva: -> marvel
+	nuevoHeroe: heroe h x marvel m -> marvel
+	nuevoVillano: villano v x marvel m -> marvel
+	pelear: conj(heroe) ch x conj(villano) cv x marvel -> marvel 		{ 
+																			(ch ⊂ heroes(m) ∧ cv ⊂ villanos(m))
+																			(∀v:villano) (v ∈ cv =>ₗ ¬encarcelado(v))
+																		}
+
+observadores:
+	heroes: marvel -> conj(heroe)
+	villanos: marvel -> conj(villano)
+	peleas: heroe h x villano v x marvel m -> nat			{h ∈ heroes(m) ∧ v ∈ villanos(m)}
+
+otras operaciones:
+	totalPeleas: villano v x conj(heroes) c x marvel m -> nat    {c ⊂ heroes(m)}
+	encarcelado: villano v x marvel m -> bool 		{v ∈ villanos(m)}
+
+axiomas
+
+∀h,h': heroe, ∀v,v': villano, ∀m: marvel, ∀ch:conj(heroe), ∀cv:conj(villano)
+
+	heroes(nueva) ≡ ϕ
+	heroes(nuevoHeroe(h, m)) ≡ Ag(h, heroes(m))
+	heroes(nuevoVillano(v, m)) ≡ heroes(m)
+	heroes(pelear(ch, cv, m)) ≡ heroes(m)
+
+	villanos(nueva) ≡ ϕ
+	villanos(nuevoHeroe(h, m)) ≡ villanos(m)
+	villanos(nuevoVillano(v, m)) ≡ Ag(v, villanos(m))
+	villanos(pelear(ch, cv, m)) ≡ villanos(m)
+
+	peleas(h, v, nueva) ≡ 0
+	peleas(h, v, nuevoHeroe(h', m)) ≡ peleas(h, v, m)
+	peleas(h, v, nuevoVillano(v', m)) ≡ peleas(h, v, m)
+	peleas(h, v, pelear(ch, cv, m)) ≡ β(h ∈ ch ∧ v ∈ cv) + peleas(h, v, m)
+
+	totalPeleas(v, ch, m) ≡ if (ϕ?(ch)) then 0
+							else 
+								peleas(dameUno(ch), v, m) + totalPeleas(v, sinUno(ch), m)
+							fi
+
+	encarcelado(v) ≡ totalPeleas(v, heroes(m), m) = 3
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
