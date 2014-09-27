@@ -1,11 +1,8 @@
 TAD heroe es string
 TAD villano es string
 
-
 TAD MarvelCity
 genero: marvel
-
-
 
 igualdad observacional:
 
@@ -16,7 +13,6 @@ igualdad observacional:
 					  ∧ₗ (peleas(h, v, m) = peleas(h, v, n) ∧ encarcelado(v, m) = encarcelado(v, n))  
 					)  
 				)
-
 
 generadores:
 	nueva: -> marvel

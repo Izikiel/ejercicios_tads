@@ -22,50 +22,49 @@ otras operaciones
 
 axiomas
 
-#Celdas(Arrancar(n)) ≡ n
-#Celdas(PonerElem(c)) ≡ #Celdas(c) 
-#Celdas(SacarElem(c)) ≡ #Celdas(c) 
-#Celdas(←(c)) ≡ #Celdas(c) 
-#Celdas(→(c)) ≡ #Celdas(c) 
+	#Celdas(Arrancar(n)) ≡ n
+	#Celdas(PonerElem(c)) ≡ #Celdas(c) 
+	#Celdas(SacarElem(c)) ≡ #Celdas(c) 
+	#Celdas(←(c)) ≡ #Celdas(c) 
+	#Celdas(→(c)) ≡ #Celdas(c) 
 
-#Giros→(Arrancar(n)) ≡ 0
-#Giros→(PonerElem(c)) ≡ #Giros→(c)
-#Giros→(SacarElem(c)) ≡ #Giros→(c)
-#Giros→(←(c)) ≡ #Giros→(c)
-#Giros→(→(c)) ≡ 1 + #Giros→(c)
+	#Giros→(Arrancar(n)) ≡ 0
+	#Giros→(PonerElem(c)) ≡ #Giros→(c)
+	#Giros→(SacarElem(c)) ≡ #Giros→(c)
+	#Giros→(←(c)) ≡ #Giros→(c)
+	#Giros→(→(c)) ≡ 1 + #Giros→(c)
 
-#Giros←(Arrancar(n)) ≡ 0 
-#Giros←(PonerElem(c)) ≡ #Giros←(c)
-#Giros←(SacarElem(c)) ≡ #Giros←(c)
-#Giros←(←(c)) ≡ 1 + #Giros←(c)
-#Giros←(→(c)) ≡ #Giros←(c)
+	#Giros←(Arrancar(n)) ≡ 0 
+	#Giros←(PonerElem(c)) ≡ #Giros←(c)
+	#Giros←(SacarElem(c)) ≡ #Giros←(c)
+	#Giros←(←(c)) ≡ 1 + #Giros←(c)
+	#Giros←(→(c)) ≡ #Giros←(c)
 
-CeldaActual(Arrancar(n)) ≡ 0
-CeldaActual(PonerElem(c)) ≡ CeldaActual(c)
-CeldaActual(SacarElem(c)) ≡ CeldaActual(c)
-CeldaActual(←(c)) ≡ if CeldaActual(c) - 1 < 0 then #Celdas(c) - 1 else CeldaActual(c) - 1 fi
-CeldaActual(→(c)) ≡ if CeldaActual(c) + 1 = #Celdas(c) then 0 else CeldaActual(c) + 1 fi
+	CeldaActual(Arrancar(n)) ≡ 0
+	CeldaActual(PonerElem(c)) ≡ CeldaActual(c)
+	CeldaActual(SacarElem(c)) ≡ CeldaActual(c)
+	CeldaActual(←(c)) ≡ if CeldaActual(c) - 1 < 0 then #Celdas(c) - 1 else CeldaActual(c) - 1 fi
+	CeldaActual(→(c)) ≡ if CeldaActual(c) + 1 = #Celdas(c) then 0 else CeldaActual(c) + 1 fi
 
-CeldaOcupada?(n, Arrancar(n)) ≡ False
-CeldaOcupada?(n, PonerElem(c)) ≡ if CeldaActual(c) = n then True else CeldaOcupada?(n, c) fi
-CeldaOcupada?(n, SacarElem(c)) ≡ if CeldaActual(c) = n then False else CeldaOcupada?(n, c) fi
-CeldaOcupada?(n, ←(c)) ≡ CeldaOcupada?(n, c)
-CeldaOcupada?(n, →(c)) ≡ CeldaOcupada?(n, c)
+	CeldaOcupada?(n, Arrancar(n)) ≡ False
+	CeldaOcupada?(n, PonerElem(c)) ≡ if CeldaActual(c) = n then True else CeldaOcupada?(n, c) fi
+	CeldaOcupada?(n, SacarElem(c)) ≡ if CeldaActual(c) = n then False else CeldaOcupada?(n, c) fi
+	CeldaOcupada?(n, ←(c)) ≡ CeldaOcupada?(n, c)
+	CeldaOcupada?(n, →(c)) ≡ CeldaOcupada?(n, c)
 
 
-CeldaActualOcupada?(c) ≡ CeldaOcupada?(CeldaActual(c), c)
+	CeldaActualOcupada?(c) ≡ CeldaOcupada?(CeldaActual(c), c)
 
-CeldasOcupadas: nat n x cinta c -> nat
+	CeldasOcupadas: nat n x cinta c -> nat
 
-CeldasOcupadas(n,c) ≡ 
-					if n < #Celdas(c) then
-						β(CeldaOcupada?(n, c)) + CeldasOcupadas(n+1,c) 
-					else
-						0
-					fi
+	CeldasOcupadas(n,c) ≡ 
+						if n < #Celdas(c) then
+							β(CeldaOcupada?(n, c)) + CeldasOcupadas(n+1,c) 
+						else
+							0
+						fi
 
-#Elem(c) ≡ CeldasOcupadas(0, c)
-
+	#Elem(c) ≡ CeldasOcupadas(0, c)
 
 
 TAD Electroiman 
@@ -90,49 +89,44 @@ otras operaciones
 
 axiomas
 
-Cinta(Arrancar(c)) ≡ c
-Cinta(Prender(e)) ≡ Cinta(e)
-Cinta(Apagar(e)) ≡ Cinta(e)
-Cinta(←(e)) ≡ →(Cinta(e))
-Cinta(→(e)) ≡ ←(Cinta(e))
+	Cinta(Arrancar(c)) ≡ c
+	Cinta(Prender(e)) ≡ Cinta(e)
+	Cinta(Apagar(e)) ≡ Cinta(e)
+	Cinta(←(e)) ≡ →(Cinta(e))
+	Cinta(→(e)) ≡ ←(Cinta(e))
 
-ImanPrendido?(Arrancar(c)) ≡ False
-ImanPrendido?(Prender(e)) ≡ True
-ImanPrendido?(Apagar(e)) ≡ False
-ImanPrendido?(←(e)) ≡ ImanPrendido?(e)
-ImanPrendido?(→(e)) ≡ ImanPrendido?(e)
+	ImanPrendido?(Arrancar(c)) ≡ False
+	ImanPrendido?(Prender(e)) ≡ True
+	ImanPrendido?(Apagar(e)) ≡ False
+	ImanPrendido?(←(e)) ≡ ImanPrendido?(e)
+	ImanPrendido?(→(e)) ≡ ImanPrendido?(e)
 
-ImanCargado?(Arrancar(c)) ≡ False
-ImanCargado?(Prender(e)) ≡ if CeldaActualOcupada?(e) then True else ImanCargado?(e) fi
-ImanCargado?(Apagar(e)) ≡ False
+	ImanCargado?(Arrancar(c)) ≡ False
+	ImanCargado?(Prender(e)) ≡ if CeldaActualOcupada?(e) then True else ImanCargado?(e) fi
+	ImanCargado?(Apagar(e)) ≡ False
 
-ImanCargado?(←(e)) ≡ if ¬(ImanCargado?(e)) ∧ CeldaActualOcupada?(←(e)) then
-					 	True 
-					 else 
-					 	ImanCargado?(e) 
-					 fi
+	ImanCargado?(←(e)) ≡ if ¬(ImanCargado?(e)) ∧ CeldaActualOcupada?(←(e)) then
+						 	True 
+						 else 
+						 	ImanCargado?(e) 
+						 fi
 
-ImanCargado?(→(e)) ≡ if ¬(ImanCargado?(e)) ∧ CeldaActualOcupada?(→(e)) then
-					 	True 
-					 else 
-					 	ImanCargado?(e) 
-					 fi
+	ImanCargado?(→(e)) ≡ if ¬(ImanCargado?(e)) ∧ CeldaActualOcupada?(→(e)) then
+						 	True 
+						 else 
+						 	ImanCargado?(e) 
+						 fi
 
+	#Giros→(Arrancar(c)) ≡ 0
+	#Giros→(Prender(e)) ≡ #Giros→(e)
+	#Giros→(Apagar(e)) ≡ #Giros→(e)
+	#Giros→(←(e)) ≡ #Giros→(e)
+	#Giros→(→(e)) ≡ 1 + #Giros→(e)
 
+	#Giros←(Arrancar(c)) ≡ 0 
+	#Giros←(Prender(e)) ≡ #Giros←(e)
+	#Giros←(Apagar(e)) ≡ #Giros←(e)
+	#Giros←(←(e)) ≡ 1 + #Giros←(e)
+	#Giros←(→(e)) ≡ #Giros←(e)
 
-
-#Giros→(Arrancar(c)) ≡ 0
-#Giros→(Prender(e)) ≡ #Giros→(e)
-#Giros→(Apagar(e)) ≡ #Giros→(e)
-#Giros→(←(e)) ≡ #Giros→(e)
-#Giros→(→(e)) ≡ 1 + #Giros→(e)
-
-#Giros←(Arrancar(c)) ≡ 0 
-#Giros←(Prender(e)) ≡ #Giros←(e)
-#Giros←(Apagar(e)) ≡ #Giros←(e)
-#Giros←(←(e)) ≡ 1 + #Giros←(e)
-#Giros←(→(e)) ≡ #Giros←(e)
-
-CeldaActualOcupada?(e) ≡ CeldaActualOcupada?(cinta(e))
-
-
+	CeldaActualOcupada?(e) ≡ CeldaActualOcupada?(cinta(e))	
